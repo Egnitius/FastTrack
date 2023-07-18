@@ -60,13 +60,14 @@ public class Desktop extends javax.swing.JFrame {
         displayImageOnButton(jButton2, 5);
         displayImageOnButton(jButton6, 6);
         displayImageOnButton(jButton7, 4);
-        displayImageOnButton(jButton8,8);
+        displayImageOnButton(jButton8, 8);
         displayImageOnButton(jButton9, 7);
-        displayImageOnButton(jButton10,12);
+        displayImageOnButton(jButton10, 12);
         displayImageOnButton(jButton11, 10);
         displayImageOnButton(jButton12, 9);
         displayImageOnButton(jButton13, 11);
-        
+
+        updateTotalPrice();
     }
 
     public void addtable(int itemID, String Item, int Qty, Double Price) {
@@ -105,6 +106,7 @@ public class Desktop extends javax.swing.JFrame {
         rowData.add(df.format(totalPrice));
 
         dt.addRow(rowData);
+
     }
 
     public void cal() {
@@ -122,6 +124,32 @@ public class Desktop extends javax.swing.JFrame {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
         DecimalFormat df = new DecimalFormat("0.00", symbols);
         total.setText(String.valueOf(df.format(tot)));
+    }
+
+    public void updateTotalPrice() {
+        try {
+            String query = "SELECT itemID, price, quantity FROM stock";
+            PreparedStatement pet = conn.prepareStatement(query);
+            ResultSet resultSet = pet.executeQuery();
+
+            while (resultSet.next()) {
+                int itemID = resultSet.getInt("itemID");
+                int quantity = resultSet.getInt("quantity");
+                double price = resultSet.getDouble("price");
+                double totalPrice = quantity * price;
+
+                // Update the TotalPrice column in the stock table
+                String updateQuery = "UPDATE stock SET TotalPrice = ? WHERE itemID = ?";
+                PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+                updateStmt.setDouble(1, totalPrice);
+                updateStmt.setInt(2, itemID);
+                updateStmt.executeUpdate();
+            }
+
+            System.out.println("TotalPrice updated successfully.");
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -204,6 +232,7 @@ public class Desktop extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         printScreen = new javax.swing.JTextArea();
         btnDelete = new javax.swing.JButton();
+        jbtnClear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FastTrack");
@@ -824,6 +853,16 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
+        jbtnClear.setBackground(new java.awt.Color(0, 102, 102));
+        jbtnClear.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jbtnClear.setForeground(new java.awt.Color(255, 255, 255));
+        jbtnClear.setText("Clear");
+        jbtnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnClearActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -832,7 +871,10 @@ public class Desktop extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDelete))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jbtnClear)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
                 .addContainerGap())
@@ -845,7 +887,9 @@ public class Desktop extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jbtnClear))
                         .addGap(0, 13, Short.MAX_VALUE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
@@ -1621,9 +1665,9 @@ public class Desktop extends javax.swing.JFrame {
             printScreen.setText(printScreen.getText() + "Change :" + "\t\tR " + change.getText() + "\n");
             printScreen.setText(printScreen.getText() + "--------------------------------------------------------------");
             printScreen.setText(printScreen.getText() + "\n          Cashier: #Codebreakers " + formattedDate + "\n");
-            printScreen.setText(printScreen.getText() + "**************************************************************");
+            printScreen.setText(printScreen.getText() + "**************************************************");
             printScreen.setText(printScreen.getText() + "\n          Thanks For Shopping With Us...!!\n");
-            printScreen.setText(printScreen.getText() + "**************************************************************");
+            printScreen.setText(printScreen.getText() + "**************************************************");
 
             printScreen.print(); //print
 
@@ -1634,6 +1678,12 @@ public class Desktop extends javax.swing.JFrame {
     private void jButton12ActionPerformed() {
 
     }//GEN-LAST:event_btnPrintActionPerformed
+
+    private void jbtnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnClearActionPerformed
+        DefaultTableModel dt = (DefaultTableModel) jTable1.getModel();
+        dt.setRowCount(0);
+        total.setText("00");
+    }//GEN-LAST:event_jbtnClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1712,6 +1762,7 @@ public class Desktop extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton jbtnClear;
     private java.awt.Label label1;
     private java.awt.Label label2;
     private java.awt.Label label3;
