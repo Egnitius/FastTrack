@@ -5,6 +5,7 @@
 package fasttrack;
 
 import java.awt.image.BufferedImage;
+import java.awt.print.PrinterException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -66,8 +67,6 @@ public class Desktop extends javax.swing.JFrame {
         displayImageOnButton(jButton11, 10);
         displayImageOnButton(jButton12, 9);
         displayImageOnButton(jButton13, 11);
-
-        updateTotalPrice();
     }
 
     public void addtable(int itemID, String Item, int Qty, Double Price) {
@@ -851,7 +850,7 @@ public class Desktop extends javax.swing.JFrame {
                                 .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblA9, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblA11, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(0, 102, 102));
@@ -888,6 +887,7 @@ public class Desktop extends javax.swing.JFrame {
         });
 
         jtxtBarcode.setColumns(20);
+        jtxtBarcode.setFont(new java.awt.Font("Code39", 0, 14)); // NOI18N
         jtxtBarcode.setRows(5);
         jScrollPane3.setViewportView(jtxtBarcode);
 
@@ -897,14 +897,14 @@ public class Desktop extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jbtnClear)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDelete)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jbtnClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -912,17 +912,14 @@ public class Desktop extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbtnClear))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jbtnClear))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(0, 102, 102));
@@ -1237,6 +1234,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA.setText(String.valueOf(i));
         addtables(itemID, "Apples", i, 25.00);
         cal();
+        
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Applers *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -1884,13 +1888,36 @@ public class Desktop extends javax.swing.JFrame {
         DecimalFormat df = new DecimalFormat("0.00", symbols);
 
         change.setText(String.valueOf(df.format(balance)));
+        updateTotalPrice();
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = currentDate.format(formatter);
-// bill print
+
+        String cashierName = "";
+        // Get the logged-in employee ID
+        FastTrack fasttrack = new FastTrack();
+        String employeeId = fasttrack.getEmployeeId();
+        System.out.println("Employee ID: " + employeeId);
+
+        try {
+            String query = "SELECT employeeName FROM tblemployees WHERE employeeID = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, employeeId);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        cashierName = rs.getString("employeeName");
+                        System.out.println("Cashier Name: " + cashierName);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // bill print
         try {
             printScreen.setText("\tFastTrack\n");
             printScreen.setText(printScreen.getText() + "\t19AM\n");
@@ -1902,15 +1929,14 @@ public class Desktop extends javax.swing.JFrame {
 
             DefaultTableModel df = (DefaultTableModel) jTable1.getModel();
 
-            //printScreen.setText(printScreen.getText() + "  ");
-            //Getting table product details
+            // Getting table product details
             for (int a = 0; a < jTable1.getRowCount(); a++) {
                 String name = df.getValueAt(a, 1).toString();
                 String quantity = df.getValueAt(a, 2).toString();
                 String price = df.getValueAt(a, 3).toString();
 
-                //String totalPrice =price = price * quantity;
-                printScreen.setText(printScreen.getText() + "  " + name + "\t" + quantity + "\t" + "R " + price + "\n");
+                // String totalPrice =price = price * quantity;
+                printScreen.setText(printScreen.getText() + " " + name + "\t" + quantity + "\t" + "R " + price + "\n");
             }
 
             printScreen.setText(printScreen.getText() + "--------------------------------------------------------------\n");
@@ -1918,14 +1944,15 @@ public class Desktop extends javax.swing.JFrame {
             printScreen.setText(printScreen.getText() + "Cash  :" + "\t\tR " + cash.getText() + "\n");
             printScreen.setText(printScreen.getText() + "Change :" + "\t\tR " + change.getText() + "\n");
             printScreen.setText(printScreen.getText() + "--------------------------------------------------------------");
-            printScreen.setText(printScreen.getText() + "\n          Cashier: #Codebreakers " + formattedDate + "\n");
+            printScreen.setText(printScreen.getText() + "\n    Cashier: " + cashierName + "\tDate: " + formattedDate + "\n");
             printScreen.setText(printScreen.getText() + "**************************************************");
             printScreen.setText(printScreen.getText() + "\n          Thanks For Shopping With Us...!!\n");
             printScreen.setText(printScreen.getText() + "**************************************************");
 
             printScreen.print(); //print
 
-        } catch (Exception e) {
+        } catch (PrinterException e) {
+
         }
     }
 
@@ -2074,8 +2101,8 @@ public class Desktop extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtnPeriodActionPerformed
 
     private void jbtnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnExitActionPerformed
-        
-        
+
+
     }//GEN-LAST:event_jbtnExitActionPerformed
 
     /**

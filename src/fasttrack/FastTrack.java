@@ -4,7 +4,6 @@
  */
 package fasttrack;
 
-
 import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
@@ -178,21 +177,24 @@ public class FastTrack extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             FastTrack fast = new FastTrack();
             fast.setVisible(true);
-            
+
             // Event handling for the "Login" button
             fast.btnLogin.addActionListener((ActionEvent e) -> {
                 // Get the entered employee ID and PIN
                 String employeeID = fast.txtEmployeeId.getText();
                 String employeePass = new String(fast.jPin.getPassword());
-                
                 // Perform login authentication logic
                 if (authenticateUser(employeeID, employeePass)) {
                     // Successful login
                     System.out.println("Login successful!");
+
+                    // Store the entered employeeID in the class-level variable
+                    employeeId = employeeID;
+
                     // TODO: Add code to navigate to the next screen or perform desired actions
                     Desktop desktop = new Desktop();
                     desktop.setVisible(true);
-                    
+
                     fast.dispose();
                 } else {
                     // Failed login
@@ -203,58 +205,65 @@ public class FastTrack extends javax.swing.JFrame {
         });
     }
 
-private static boolean authenticateUser(String employeeID, String employeePass) {
-    // TODO: Implement your authentication logic here
-    // Example: Check the employee ID and PIN against a database or predefined values
-    
-    // Create a database connection and query the employee table
-    Connection conn = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-    boolean isAuthenticated = false;
-    
-    try {
-        String url = "jdbc:mysql://localhost:3306/fasttrack";
-        String user = "root";
-        String password = "12345";
-        
-        conn = DriverManager.getConnection(url, user, password);
-        
-        // Prepare the SQL statement to query the employee table
-        String query = "SELECT * FROM tblemployees WHERE EmployeeID = ? AND employeePass = ?";
-        stmt = conn.prepareStatement(query);
-        stmt.setString(1, employeeID);
-        stmt.setString(2, employeePass);
-        
-        // Execute the query
-        rs = stmt.executeQuery();
-        
-        // Check if a row is returned
-        if (rs.next()) {
-            // Authentication successful
-            isAuthenticated = true;
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        // Close the database resources
+    private static boolean authenticateUser(String employeeID, String employeePass) {
+        // TODO: Implement your authentication logic here
+        // Example: Check the employee ID and PIN against a database or predefined values
+
+        // Create a database connection and query the employee table
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean isAuthenticated = false;
+
         try {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stmt != null) {
-                stmt.close();
-            }
-            if (conn != null) {
-                conn.close();
+            String url = "jdbc:mysql://localhost:3306/fasttrack";
+            String user = "root";
+            String password = "12345";
+
+            conn = DriverManager.getConnection(url, user, password);
+
+            // Prepare the SQL statement to query the employee table
+            String query = "SELECT * FROM tblemployees WHERE EmployeeID = ? AND employeePass = ?";
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, employeeID);
+            stmt.setString(2, employeePass);
+
+            // Execute the query
+            rs = stmt.executeQuery();
+
+            // Check if a row is returned
+            if (rs.next()) {
+                // Authentication successful
+                isAuthenticated = true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the database resources
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
+        return isAuthenticated;
     }
-    
-    return isAuthenticated;
-}
+
+    private static String employeeId;
+
+    // Getter method for employeeId
+    public String getEmployeeId() {
+        return employeeId;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button btnLogin;
@@ -266,4 +275,5 @@ private static boolean authenticateUser(String employeeID, String employeePass) 
     private java.awt.Label label2;
     private java.awt.TextField txtEmployeeId;
     // End of variables declaration//GEN-END:variables
+
 }
