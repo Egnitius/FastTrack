@@ -4,7 +4,9 @@
  */
 package fasttrack;
 
-import java.awt.print.PrinterException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -15,8 +17,14 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 /**
  *
@@ -29,6 +37,7 @@ public class Desktop extends javax.swing.JFrame {
     public Desktop() {
 
         initComponents();
+
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(30);
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(200);
 
@@ -44,6 +53,20 @@ public class Desktop extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Desktop.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        displayImageOnButton(jButton3, 1);
+        displayImageOnButton(jButton4, 2);
+        displayImageOnButton(jButton5, 3);
+        displayImageOnButton(jButton2, 5);
+        displayImageOnButton(jButton6, 6);
+        displayImageOnButton(jButton7, 4);
+        displayImageOnButton(jButton8,8);
+        displayImageOnButton(jButton9, 7);
+        displayImageOnButton(jButton10,12);
+        displayImageOnButton(jButton11, 10);
+        displayImageOnButton(jButton12, 9);
+        displayImageOnButton(jButton13, 11);
+        
     }
 
     public void addtable(int itemID, String Item, int Qty, Double Price) {
@@ -283,7 +306,6 @@ public class Desktop extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(0, 102, 102));
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/apples.jpg"))); // NOI18N
         jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -297,7 +319,6 @@ public class Desktop extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel6.setText("R 25.00");
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bananas.jpg"))); // NOI18N
         jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -317,7 +338,6 @@ public class Desktop extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel4.setText("R 20.00");
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pears.jpg"))); // NOI18N
         jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -325,7 +345,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/watermelon.jpg"))); // NOI18N
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -339,7 +358,6 @@ public class Desktop extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel10.setText("R 20.00");
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Mangos.jpg"))); // NOI18N
         jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -347,7 +365,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Grapes.jpg"))); // NOI18N
         jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -355,7 +372,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cabbage.jpg"))); // NOI18N
         jButton8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -363,7 +379,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Carrots.jpg"))); // NOI18N
         jButton9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -377,7 +392,6 @@ public class Desktop extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel12.setText("1 kg Grapes");
 
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/beetroot.jpg"))); // NOI18N
         jButton10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -385,7 +399,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/pumpkin.jpg"))); // NOI18N
         jButton11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -393,7 +406,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/potatoes.jpg"))); // NOI18N
         jButton12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -401,7 +413,6 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
 
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/onions.jpg"))); // NOI18N
         jButton13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -443,7 +454,7 @@ public class Desktop extends javax.swing.JFrame {
         jLabel23.setText("Potatoes");
 
         jLabel24.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
-        jLabel24.setText("R 50.00");
+        jLabel24.setText("R 60.00");
 
         jLabel25.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel25.setText("1 kg Onions");
@@ -550,9 +561,7 @@ public class Desktop extends javax.swing.JFrame {
                                     .addGroup(jPanel3Layout.createSequentialGroup()
                                         .addGap(0, 2, Short.MAX_VALUE)
                                         .addComponent(lbl10, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(lblA8, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                    .addComponent(lblA8, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -820,13 +829,10 @@ public class Desktop extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(100, 100, 100)
-                        .addComponent(btnDelete)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
                 .addContainerGap())
@@ -868,36 +874,18 @@ public class Desktop extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void updateQuantityLabel() {
-
+    private void updateQuantityLabel(int itemID, JLabel label) {
         try {
             String query = "SELECT quantity FROM stock WHERE itemID = ?";
             PreparedStatement pet = conn.prepareStatement(query);
-            int itemID = 1; // Replace with the actual item ID
             pet.setInt(1, itemID);
             ResultSet resultSet = pet.executeQuery();
 
             if (resultSet.next()) {
                 int quantity = resultSet.getInt("quantity");
-                lbl1.setText(String.valueOf(quantity));
+                label.setText(String.valueOf(quantity));
             } else {
-                lbl1.setText("No data found");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error executing SQL query: " + e.getMessage());
-        }
-        try {
-            String query = "SELECT quantity FROM stock WHERE itemID = ?";
-            PreparedStatement pet = conn.prepareStatement(query);
-            int itemID = 3; // Replace with the actual item ID
-            pet.setInt(1, itemID);
-            ResultSet resultSet = pet.executeQuery();
-
-            if (resultSet.next()) {
-                int quantity = resultSet.getInt("quantity");
-                lbl3.setText(String.valueOf(quantity));
-            } else {
-                lbl3.setText("?");
+                label.setText("No data found");
             }
         } catch (SQLException e) {
             System.out.println("Error executing SQL query: " + e.getMessage());
@@ -935,7 +923,7 @@ public class Desktop extends javax.swing.JFrame {
             updateStmt.setInt(2, itemID);
             int rowsAffected = updateStmt.executeUpdate();
 
-            updateQuantityLabel();
+            updateQuantityLabel(1, lbl1);
 
             if (rowsAffected > 0) {
                 System.out.println("Quantity updated successfully.");
@@ -984,7 +972,7 @@ public class Desktop extends javax.swing.JFrame {
             updateStmt.setInt(2, itemID);
             int rowsAffected = updateStmt.executeUpdate();
 
-            updateQuantityLabel();
+            updateQuantityLabel(3, lbl3);
 
             if (rowsAffected > 0) {
                 System.out.println("Quantity updated successfully.");
@@ -998,119 +986,528 @@ public class Desktop extends javax.swing.JFrame {
         int i = Integer.parseInt(lblA2.getText());
         ++i;
         lblA2.setText(String.valueOf(i));
-        addtables(itemID, "Pears", i, 30.00);
+        addtables(itemID, "Pears", i, 20.00);
         cal();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl2.getText());
+        int itemID = 2; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(2, lbl2);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA1.getText());
         ++i;
-        lbl2.setText(String.valueOf(i));
-
-        addtables(2, "Bananas", i, 30.00);
-
+        lblA1.setText(String.valueOf(i));
+        addtables(itemID, "Bananas", i, 30.00);
         cal();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl4.getText());
+        int itemID = 4; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(4, lbl4);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA3.getText());
         ++i;
-        lbl4.setText(String.valueOf(i));
-
-        addtables(4, "Watermelon", i, 20.00);
-
+        lblA3.setText(String.valueOf(i));
+        addtables(itemID, "Watermelon", i, 20.00);
         cal();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl12.getText());
+        int itemID = 11; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(11, lbl12);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA10.getText());
         ++i;
-        lbl12.setText(String.valueOf(i));
-
-        addtables(11, "Potatoes", i, 80.00);
-
+        lblA10.setText(String.valueOf(i));
+        addtables(itemID, "Potatoes", i, 60.00);
         cal();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl5.getText());
+        int itemID = 6; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(6, lbl5);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA5.getText());
         ++i;
-        lbl5.setText(String.valueOf(i));
-
-        addtables(6, "Grapes", i, 50.00);
-
+        lblA5.setText(String.valueOf(i));
+        addtables(itemID, "Grapes", i, 50.00);
         cal();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // BTN Mangos
-        int i = Integer.parseInt(lbl6.getText());
+        // BTN CODE
+        int itemID = 5; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(5, lbl6);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA4.getText());
         ++i;
-        lbl6.setText(String.valueOf(i));
-
-        addtables(5, "Mangos", i, 35.00);
-
+        lblA4.setText(String.valueOf(i));
+        addtables(itemID, "Mangos", i, 35.00);
         cal();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl8.getText());
+        int itemID = 7; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(7, lbl8);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA6.getText());
         ++i;
-        lbl8.setText(String.valueOf(i));
-
-        addtables(7, "Cabbage", i, 25.00);
-
+        lblA6.setText(String.valueOf(i));
+        addtables(itemID, "Cabbage", i, 25.00);
         cal();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl7.getText());
+        int itemID = 8; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(8, lbl7);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA7.getText());
         ++i;
-        lbl7.setText(String.valueOf(i));
-
-        addtables(8, "Carrots", i, 15.00);
-
+        lblA7.setText(String.valueOf(i));
+        addtables(itemID, "Carrots", i, 15.00);
         cal();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl7.getText());
+        int itemID = 9; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(9, lbl10);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA8.getText());
         ++i;
-        lbl7.setText(String.valueOf(i));
-
-        addtables(9, "Beetroot", i, 20.00);
-
+        lblA8.setText(String.valueOf(i));
+        addtables(itemID, "Beetroot", i, 20.00);
         cal();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl9.getText());
+        int itemID = 10; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(10, lbl9);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA9.getText());
         ++i;
-        lbl9.setText(String.valueOf(i));
-
-        addtables(10, "Pumpkin", i, 35.00);
-
+        lblA9.setText(String.valueOf(i));
+        addtables(itemID, "Pumpkin", i, 35.00);
         cal();
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // BTN CODE
-        int i = Integer.parseInt(lbl11.getText());
+        int itemID = 12; // Replace with the actual item ID you want to update
+        int currentQuantity = 0;
+
+        try {
+            String getCurrentQuantityQuery = "SELECT quantity FROM stock WHERE itemID = ?";
+            PreparedStatement getCurrentQuantityStmt = conn.prepareStatement(getCurrentQuantityQuery);
+            getCurrentQuantityStmt.setInt(1, itemID);
+            ResultSet currentQuantityResult = getCurrentQuantityStmt.executeQuery();
+
+            if (currentQuantityResult.next()) {
+                currentQuantity = currentQuantityResult.getInt("quantity");
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+            return;
+        }
+
+        int newQuantity = currentQuantity - 1;
+
+        try {
+            String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
+            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+            updateStmt.setInt(1, newQuantity);
+            updateStmt.setInt(2, itemID);
+            int rowsAffected = updateStmt.executeUpdate();
+
+            updateQuantityLabel(12, lbl11);
+
+            if (rowsAffected > 0) {
+                System.out.println("Quantity updated successfully.");
+            } else {
+                System.out.println("No rows updated.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing SQL query: " + e.getMessage());
+        }
+
+        int i = Integer.parseInt(lblA11.getText());
         ++i;
-        lbl11.setText(String.valueOf(i));
-
-        addtables(12, "Onions", i, 15.00);
-
+        lblA11.setText(String.valueOf(i));
+        addtables(itemID, "Onions", i, 15.00);
         cal();
     }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void displayImageOnButton(JButton button, int itemID) {
+        try {
+            String query = "SELECT productImg FROM stock WHERE itemID = ?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, itemID);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                byte[] imageData = resultSet.getBytes("productImg");
+                if (imageData != null) {
+                    ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData);
+                    BufferedImage image = ImageIO.read(inputStream);
+
+                    // Create an ImageIcon from the BufferedImage
+                    ImageIcon icon = new ImageIcon(image);
+
+                    // Set the ImageIcon as the icon for the button
+                    button.setIcon(icon);
+                } else {
+                    System.out.println("No image found for itemID: " + itemID);
+                }
+            } else {
+                System.out.println("No data found for itemID: " + itemID);
+            }
+        } catch (SQLException | IOException e) {
+            System.out.println("Error retrieving image: " + e.getMessage());
+        }
+    }
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // delete some iteam
@@ -1192,7 +1589,10 @@ public class Desktop extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
-        // bill print
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+// bill print
         try {
             printScreen.setText("\tFastTrack\n");
             printScreen.setText(printScreen.getText() + "\t19AM\n");
@@ -1220,8 +1620,10 @@ public class Desktop extends javax.swing.JFrame {
             printScreen.setText(printScreen.getText() + "Cash  :" + "\t\tR " + cash.getText() + "\n");
             printScreen.setText(printScreen.getText() + "Change :" + "\t\tR " + change.getText() + "\n");
             printScreen.setText(printScreen.getText() + "--------------------------------------------------------------");
+            printScreen.setText(printScreen.getText() + "\n          Cashier: #Codebreakers " + formattedDate + "\n");
+            printScreen.setText(printScreen.getText() + "**************************************************************");
             printScreen.setText(printScreen.getText() + "\n          Thanks For Shopping With Us...!!\n");
-            printScreen.setText(printScreen.getText() + "--------------------------------------------------------------");
+            printScreen.setText(printScreen.getText() + "**************************************************************");
 
             printScreen.print(); //print
 
