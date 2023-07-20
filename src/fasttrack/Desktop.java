@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.NumberFormat.Style;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
@@ -27,6 +28,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -250,8 +254,8 @@ public class Desktop extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jtxtBarcode = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        printScreen = new javax.swing.JTextArea();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        printScreen = new javax.swing.JTextPane();
         jPanel5 = new javax.swing.JPanel();
         jbtn1 = new javax.swing.JButton();
         jbtn7 = new javax.swing.JButton();
@@ -948,10 +952,7 @@ public class Desktop extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(0, 102, 102));
 
-        printScreen.setColumns(20);
-        printScreen.setFont(new java.awt.Font("Gill Sans MT", 0, 12)); // NOI18N
-        printScreen.setRows(5);
-        jScrollPane2.setViewportView(printScreen);
+        jScrollPane4.setViewportView(printScreen);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -959,15 +960,15 @@ public class Desktop extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane4)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane4)
+                .addContainerGap())
         );
 
         jPanel5.setBackground(new java.awt.Color(0, 102, 102));
@@ -1186,7 +1187,7 @@ public class Desktop extends javax.swing.JFrame {
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, Short.MAX_VALUE))
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -2053,67 +2054,95 @@ public class Desktop extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
-        LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String formattedDate = currentDate.format(formatter);
-
-        String cashierName = "";
-        // Get the logged-in employee ID
-        FastTrack fasttrack = new FastTrack();
-        String employeeId = fasttrack.getEmployeeId();
-        System.out.println("Employee ID: " + employeeId);
-
         try {
-            String query = "SELECT employeeName FROM tblemployees WHERE employeeID = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, employeeId);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        cashierName = rs.getString("employeeName");
-                        System.out.println("Cashier Name: " + cashierName);
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String formattedDate = currentDate.format(formatter);
+
+            String cashierName = "";
+            // Get the logged-in employee ID
+            FastTrack fasttrack = new FastTrack();
+            String employeeId = fasttrack.getEmployeeId();
+            System.out.println("Employee ID: " + employeeId);
+
+            try {
+                String query = "SELECT employeeName FROM tblemployees WHERE employeeID = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setString(1, employeeId);
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            cashierName = rs.getString("employeeName");
+                            System.out.println("Cashier Name: " + cashierName);
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        // bill print
-        try {
-            printScreen.setText("\tFastTrack\n");
-            printScreen.setText(printScreen.getText() + "\t19AM\n");
-            printScreen.setText(printScreen.getText() + " \tBraamFontain\n");
-            printScreen.setText(printScreen.getText() + "\t010 1111 234\n");
-            printScreen.setText(printScreen.getText() + "--------------------------------------------------------------\n");
-            printScreen.setText(printScreen.getText() + "   Item  \tQuantity  \tPrice" + "\n");
-            printScreen.setText(printScreen.getText() + "--------------------------------------------------------------\n");
+            // bill print
+            // Style the text in JTextPane
+            StyledDocument doc = printScreen.getStyledDocument();
 
+            // Define styles
+            javax.swing.text.Style centerStyle = doc.addStyle("center", null);
+            StyleConstants.setAlignment(centerStyle, StyleConstants.ALIGN_CENTER);
+            StyleConstants.setFontSize(centerStyle, 16);
+
+            javax.swing.text.Style headingStyle = doc.addStyle("heading", null);
+            StyleConstants.setBold(headingStyle, true);
+            StyleConstants.setFontSize(headingStyle, 18);
+
+            javax.swing.text.Style underlineStyle = doc.addStyle("underline", null);
+            StyleConstants.setUnderline(underlineStyle, true);
+
+            javax.swing.text.Style boldStyle = doc.addStyle("bold", null);
+            StyleConstants.setBold(boldStyle, true);
+
+            try {
+                // Clear the existing text in the JTextPane
+                doc.remove(0, doc.getLength());
+            } catch (BadLocationException ex) {
+                Logger.getLogger(Desktop.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            // Add styled text to the JTextPane
+            doc.insertString(doc.getLength(), "FastTrack\n", centerStyle);
+            doc.insertString(doc.getLength(), "19AM\n", centerStyle);
+            doc.insertString(doc.getLength(), "BraamFontain\n", centerStyle);
+            doc.insertString(doc.getLength(), "010 1111 234\n", centerStyle);
+            doc.insertString(doc.getLength(), "--------------------------------------------------------------\n", null);
+            doc.insertString(doc.getLength(), "Item\tQuantity\tPrice\n", boldStyle);
+            doc.insertString(doc.getLength(), "--------------------------------------------------------------\n", null);
             DefaultTableModel df = (DefaultTableModel) jTable1.getModel();
-
             // Getting table product details
             for (int a = 0; a < jTable1.getRowCount(); a++) {
                 String name = df.getValueAt(a, 1).toString();
                 String quantity = df.getValueAt(a, 2).toString();
                 String price = df.getValueAt(a, 3).toString();
 
-                // String totalPrice =price = price * quantity;
-                printScreen.setText(printScreen.getText() + " " + name + "\t" + quantity + "\t" + "R " + price + "\n");
+                doc.insertString(doc.getLength(), name + "\t" + quantity + "\tR " + price + "\n", null);
             }
+            doc.insertString(doc.getLength(), "--------------------------------------------------------------\n", null);
+            doc.insertString(doc.getLength(), "Sub Total:\t\tR " + total.getText() + "\n", null);
+            doc.insertString(doc.getLength(), "Cash:\t\tR " + cash.getText() + "\n", null);
+            doc.insertString(doc.getLength(), "Change:\t\tR " + change.getText() + "\n", null);
+            doc.insertString(doc.getLength(), "--------------------------------------------------------------\n", null);
+            doc.insertString(doc.getLength(), "Cashier: ", boldStyle);
+            doc.insertString(doc.getLength(), cashierName + "\tDate: ", null);
+            doc.insertString(doc.getLength(), formattedDate + "\n", underlineStyle);
+            doc.insertString(doc.getLength(), "**************************************************\n", null);
+            doc.insertString(doc.getLength(), "Thanks For Shopping With Us...!!\n", centerStyle);
+            doc.insertString(doc.getLength(), "**************************************************\n", null);
 
-            printScreen.setText(printScreen.getText() + "--------------------------------------------------------------\n");
-            printScreen.setText(printScreen.getText() + "Sub Total : " + "\t\tR " + total.getText() + "\n");
-            printScreen.setText(printScreen.getText() + "Cash  :" + "\t\tR " + cash.getText() + "\n");
-            printScreen.setText(printScreen.getText() + "Change :" + "\t\tR " + change.getText() + "\n");
-            printScreen.setText(printScreen.getText() + "--------------------------------------------------------------");
-            printScreen.setText(printScreen.getText() + "\n    Cashier: " + cashierName + "\tDate: " + formattedDate + "\n");
-            printScreen.setText(printScreen.getText() + "**************************************************");
-            printScreen.setText(printScreen.getText() + "\n          Thanks For Shopping With Us...!!\n");
-            printScreen.setText(printScreen.getText() + "**************************************************");
-
-            printScreen.print(); //print
-
-        } catch (PrinterException e) {
-
+            // Print the content
+            try {
+                printScreen.print();
+            } catch (PrinterException ex) {
+                ex.printStackTrace();
+            }
+        } catch (BadLocationException ex) {
+            Logger.getLogger(Desktop.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -2353,8 +2382,8 @@ public class Desktop extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton jbtn0;
     private javax.swing.JButton jbtn1;
@@ -2398,7 +2427,7 @@ public class Desktop extends javax.swing.JFrame {
     private javax.swing.JLabel lblA7;
     private javax.swing.JLabel lblA8;
     private javax.swing.JLabel lblA9;
-    private javax.swing.JTextArea printScreen;
+    private javax.swing.JTextPane printScreen;
     private java.awt.Label total;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -191,9 +193,21 @@ public class FastTrack extends javax.swing.JFrame {
                     // Store the entered employeeID in the class-level variable
                     employeeId = employeeID;
 
-                    // TODO: Add code to navigate to the next screen or perform desired actions
-                    Desktop desktop = new Desktop();
-                    desktop.setVisible(true);
+                    // Determine the user's role based on the employeeID (you need to implement this logic)
+                    userRole = determineUserRole(employeeID);
+
+                    // Open the appropriate frame based on the user's role
+                    if ("cashier".equals(userRole)) {
+                        Desktop cashierFrame = new Desktop();
+                        cashierFrame.setVisible(true);
+                    } else if ("manager".equals(userRole)) {
+                        try {
+                            admin managerFrame = new admin();
+                            managerFrame.setVisible(true);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(FastTrack.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
 
                     fast.dispose();
                 } else {
@@ -201,6 +215,7 @@ public class FastTrack extends javax.swing.JFrame {
                     System.out.println("Login failed!");
                     // TODO: Add code to display an error message or perform other actions
                 }
+
             });
         });
     }
@@ -259,6 +274,18 @@ public class FastTrack extends javax.swing.JFrame {
     }
 
     private static String employeeId;
+    private static String userRole;
+
+    private static String determineUserRole(String employeeID) {
+        // TODO: Implement the logic to determine the user's role based on the employeeID
+        // Example: You can query the database to get the role of the employee
+        // For demonstration purposes, we'll use a simple approach:
+        if ("admin".equals(employeeID)) { // Assuming "12345" is the employeeID of the manager
+            return "manager";
+        } else {
+            return "cashier";
+        }
+    }
 
     // Getter method for employeeId
     public String getEmployeeId() {
