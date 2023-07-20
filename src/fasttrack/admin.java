@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 
 public class admin extends javax.swing.JFrame {
 
@@ -37,6 +39,16 @@ public class admin extends javax.swing.JFrame {
         } catch (SQLException ex) {
             System.out.println("Error" + ex.getMessage());
         }
+
+        // Inside the method where you create the JTable
+// Inside the method where you create the JTable
+        DefaultCellEditor cellEditor = new DefaultCellEditor(new JTextField());
+        tblStock.getColumnModel().getColumn(1).setCellEditor(cellEditor); // Column "item"
+        tblStock.getColumnModel().getColumn(2).setCellEditor(cellEditor); // Column "Qty"
+        tblStock.getColumnModel().getColumn(3).setCellEditor(cellEditor); // Column "Price"
+        tblStock.getColumnModel().getColumn(4).setCellEditor(cellEditor); // Column "TotalPrice"
+        tblStock.setCellSelectionEnabled(true); // Allow selecting a single cell
+
     }
 
     @SuppressWarnings("unchecked")
@@ -141,28 +153,112 @@ public class admin extends javax.swing.JFrame {
         }
 
         @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
+        public void setValueAt(Object value, int rowIndex, int columnIndex) {
             Stock stock = data.get(rowIndex);
 
             switch (columnIndex) {
                 case 0:
-                    return stock.getItemID();
+                    stock.setItemID((int) value);
+                    break;
                 case 1:
-                    return stock.getItem();
+                    stock.setItem((String) value);
+                    break;
                 case 2:
-                    return stock.getQuantity();
+                    stock.setQuantity((int) value);
+                    break;
                 case 3:
-                    return stock.getPrice();
+                    stock.setPrice((double) value);
+                    break;
                 case 4:
-                    return stock.getTotalPrice();
-                default:
-                    return null;
+                    stock.setTotalPrice((double) value);
+                    break;
+                // Handle other columns if needed
+            }
+
+            // Update the database with the new value
+            updateDatabase(stock);
+
+            // Notify the table that data has changed
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Stock stock = data.get(rowIndex);
+
+            return switch (columnIndex) {
+                case 0 ->
+                    stock.getItemID();
+                case 1 ->
+                    stock.getItem();
+                case 2 ->
+                    stock.getQuantity();
+                case 3 ->
+                    stock.getPrice();
+                case 4 ->
+                    stock.getTotalPrice();
+                default ->
+                    null;
+            };
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            // Return the class types of the columns for proper cell rendering/editing
+            return switch (columnIndex) {
+                case 0 ->
+                    Integer.class;
+                case 1, 2 ->
+                    String.class;
+                case 3, 4 ->
+                    Double.class;
+                default ->
+                    Object.class;
+            };
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            // Set the cells in columns 1, 2, 3, and 4 as editable
+            return columnIndex >= 1 && columnIndex <= 4;
+        }
+
+        // Update the database with the modified stock data
+        private void updateDatabase(Stock stock) {
+            try {
+                String sql = "UPDATE stock SET item = ?, quantity = ?, price = ?, TotalPrice = ? WHERE itemID = ?";
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+
+                // Set the values for the prepared statement
+                pstmt.setString(1, stock.getItem());
+                pstmt.setInt(2, stock.getQuantity());
+                pstmt.setDouble(3, stock.getPrice());
+                pstmt.setDouble(4, stock.getTotalPrice());
+                pstmt.setInt(5, stock.getItemID());
+
+                // Execute the update statement
+                int rowsAffected = pstmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Stock data updated successfully.");
+                } else {
+                    System.out.println("No rows updated.");
+                }
+
+                pstmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
         @Override
         public String getColumnName(int column) {
             return columnNames[column];
+        }
+
+        public void clearData() {
+            data.clear();
+            fireTableDataChanged();
         }
     }
 
@@ -188,13 +284,15 @@ public class admin extends javax.swing.JFrame {
 
             StockTableModel model = new StockTableModel(stock);
             tblStock.setModel(model);
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
 
+        StockTableModel model = (StockTableModel) tblStock.getModel();
+        model.clearData();
     }//GEN-LAST:event_btnClearActionPerformed
 
     /**
@@ -213,15 +311,11 @@ public class admin extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+
         //</editor-fold>
 
         /* Create and display the form */
