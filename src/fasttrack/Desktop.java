@@ -26,6 +26,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -67,8 +68,21 @@ public class Desktop extends javax.swing.JFrame {
         displayImageOnButton(jButton11, 10);
         displayImageOnButton(jButton12, 9);
         displayImageOnButton(jButton13, 11);
-        
+
         updateTotalPrice();
+
+        updateQuantityLabel(1, lbl1);
+        updateQuantityLabel(3, lbl3);
+        updateQuantityLabel(2, lbl2);
+        updateQuantityLabel(4, lbl4);
+        updateQuantityLabel(11, lbl12);
+        updateQuantityLabel(6, lbl5);
+        updateQuantityLabel(5, lbl6);
+        updateQuantityLabel(7, lbl8);
+        updateQuantityLabel(8, lbl7);
+        updateQuantityLabel(9, lbl10);
+        updateQuantityLabel(10, lbl9);
+        updateQuantityLabel(12, lbl11);
     }
 
     public void addtable(int itemID, String Item, int Qty, Double Price) {
@@ -1221,6 +1235,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Apples with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1244,12 +1263,12 @@ public class Desktop extends javax.swing.JFrame {
         lblA.setText(String.valueOf(i));
         addtables(itemID, "Apples", i, 25.00);
         cal();
-        
+
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = currentDate.format(formatter);
         String Barcode;
-        Barcode = String.format("Item Is Applers *%s*", formattedDate);
+        Barcode = String.format("Item Is Apples *%s*", formattedDate);
         jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -1277,6 +1296,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Pears with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1300,6 +1324,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA2.setText(String.valueOf(i));
         addtables(itemID, "Pears", i, 20.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Pears *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -1326,6 +1357,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Bananas with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1349,6 +1385,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA1.setText(String.valueOf(i));
         addtables(itemID, "Bananas", i, 30.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Bananas *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1375,6 +1418,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Watermelon with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1398,6 +1446,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA3.setText(String.valueOf(i));
         addtables(itemID, "Watermelon", i, 20.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Watermelon *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
@@ -1424,6 +1479,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Potatoes with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1447,6 +1507,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA10.setText(String.valueOf(i));
         addtables(itemID, "Potatoes", i, 60.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Potatoes *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -1473,6 +1540,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Grapes with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1496,6 +1568,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA5.setText(String.valueOf(i));
         addtables(itemID, "Grapes", i, 50.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Grapes *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1522,6 +1601,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Mangos with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1545,6 +1629,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA4.setText(String.valueOf(i));
         addtables(itemID, "Mangos", i, 35.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Mangos *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1571,6 +1662,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Cabbage with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1594,6 +1690,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA6.setText(String.valueOf(i));
         addtables(itemID, "Cabbage", i, 25.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Cabbage *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -1620,6 +1723,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Carrots with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1643,6 +1751,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA7.setText(String.valueOf(i));
         addtables(itemID, "Carrots", i, 15.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Carrots *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1669,6 +1784,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Beetroot with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1692,6 +1812,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA8.setText(String.valueOf(i));
         addtables(itemID, "Beetroot", i, 20.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Beetroot *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -1718,6 +1845,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Pumpkin with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1741,6 +1873,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA9.setText(String.valueOf(i));
         addtables(itemID, "Pumpkin", i, 35.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Pumpkin *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -1767,6 +1906,11 @@ public class Desktop extends javax.swing.JFrame {
 
         int newQuantity = currentQuantity - 1;
 
+        if (newQuantity <= 0) {
+            // Show a pop-up message informing the cashier that the item needs to be restocked
+            JOptionPane.showMessageDialog(this, "Onions with ID " + itemID + " needs to be restocked!", "Restock Item", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         try {
             String updateQuery = "UPDATE stock SET quantity = ? WHERE itemID = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
@@ -1790,6 +1934,13 @@ public class Desktop extends javax.swing.JFrame {
         lblA11.setText(String.valueOf(i));
         addtables(itemID, "Onions", i, 15.00);
         cal();
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        String Barcode;
+        Barcode = String.format("Item Is Onions *%s*", formattedDate);
+        jtxtBarcode.setText(Barcode);
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void displayImageOnButton(JButton button, int itemID) {
@@ -2112,7 +2263,17 @@ public class Desktop extends javax.swing.JFrame {
 
     private void jbtnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnExitActionPerformed
 
+        // Show a pop-up message
+        int result = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to exit?", "FastTrack",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
+        if (result == JOptionPane.YES_OPTION) {
+            // Redirect to the login page
+            FastTrack loginFrame = new FastTrack();
+            loginFrame.setVisible(true);
+            this.dispose(); // Close the current frame (FastTrack frame)
+        }
     }//GEN-LAST:event_jbtnExitActionPerformed
 
     /**
