@@ -164,13 +164,13 @@ public class admin extends javax.swing.JFrame {
                     stock.setItem((String) value);
                     break;
                 case 2:
-                    stock.setQuantity((int) value);
+                    stock.setQuantity(Integer.parseInt((String) value)); // Convert to Integer
                     break;
                 case 3:
-                    stock.setPrice((double) value);
+                    stock.setPrice(Double.parseDouble((String) value)); // Convert to Double
                     break;
                 case 4:
-                    stock.setTotalPrice((double) value);
+                    stock.setTotalPrice(Double.parseDouble((String) value)); // Convert to Double
                     break;
                 // Handle other columns if needed
             }
