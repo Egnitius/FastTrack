@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 public class admin extends javax.swing.JFrame {
@@ -54,13 +55,13 @@ public class admin extends javax.swing.JFrame {
 
         tblStock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ItemID", "item", "Qty", "Price"
+                "ItemID", "item", "Qty", "Price", "TotalPrice"
             }
         ));
         jScrollPane1.setViewportView(tblStock);
@@ -120,34 +121,80 @@ public class admin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public class StockTableModel extends AbstractTableModel {
+
+        private final String[] columnNames = {"itemID", "item", "Qty", "Price", "TotalPrice"};
+        private final List<Stock> data;
+
+        public StockTableModel(List<Stock> data) {
+            this.data = data;
+        }
+
+        @Override
+        public int getRowCount() {
+            return data.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Stock stock = data.get(rowIndex);
+
+            switch (columnIndex) {
+                case 0:
+                    return stock.getItemID();
+                case 1:
+                    return stock.getItem();
+                case 2:
+                    return stock.getQuantity();
+                case 3:
+                    return stock.getPrice();
+                case 4:
+                    return stock.getTotalPrice();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+    }
+
+
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
-        List<Stock> stock;
-        stock = new ArrayList<>();
+        List<Stock> stock = new ArrayList<>();
 
         try {
-            String sql = "SELECT * From stock";
+            String sql = "SELECT * FROM stock";
             PreparedStatement pet = conn.prepareStatement(sql);
             ResultSet rs = pet.executeQuery();
-            DefaultTableModel model = (DefaultTableModel) tblStock.getModel();
-            model.setRowCount(0);
-            
+
             while (rs.next()) {
                 int itemID = rs.getInt("itemID");
                 String item = rs.getString("item");
                 int quantity = rs.getInt("quantity");
                 double price = rs.getDouble("price");
+                double totalPrice = rs.getDouble("TotalPrice");
 
-                Stock stocks = new Stock(itemID, price, quantity, item);
+                Stock stocks = new Stock(itemID, price, quantity, item, totalPrice);
                 stock.add(stocks);
-                model.addRow(new String[]{rs.getString(4), rs.getString(3), rs.getString(2), rs.getString(1)});
             }
+
+            StockTableModel model = new StockTableModel(stock);
+            tblStock.setModel(model);
         } catch (Exception ex) {
-            System.out.println("Error" + ex.getMessage());
+            System.out.println("Error: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnViewActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        
+
     }//GEN-LAST:event_btnClearActionPerformed
 
     /**
