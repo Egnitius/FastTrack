@@ -18,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.text.NumberFormat.Style;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
@@ -137,7 +136,6 @@ public class Desktop extends javax.swing.JFrame {
 
             Double value = Double.valueOf(jTable1.getValueAt(i, 3).toString());
             tot += value;
-
         }
 
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
