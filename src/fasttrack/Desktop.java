@@ -62,15 +62,15 @@ public class Desktop extends javax.swing.JFrame {
         displayImageOnButton(jButton3, 1);
         displayImageOnButton(jButton4, 2);
         displayImageOnButton(jButton5, 3);
-        displayImageOnButton(jButton2, 5);
-        displayImageOnButton(jButton6, 6);
-        displayImageOnButton(jButton7, 4);
-        displayImageOnButton(jButton8, 8);
-        displayImageOnButton(jButton9, 7);
-        displayImageOnButton(jButton10, 12);
+        displayImageOnButton(jButton2, 4);
+        displayImageOnButton(jButton6, 5);
+        displayImageOnButton(jButton7, 6);
+        displayImageOnButton(jButton8, 7);
+        displayImageOnButton(jButton9, 8);
+        displayImageOnButton(jButton10, 9);
         displayImageOnButton(jButton11, 10);
-        displayImageOnButton(jButton12, 9);
-        displayImageOnButton(jButton13, 11);
+        displayImageOnButton(jButton12, 11);
+        displayImageOnButton(jButton13, 12);
 
         updateTotalPrice();
 

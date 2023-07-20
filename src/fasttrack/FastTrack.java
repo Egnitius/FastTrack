@@ -201,12 +201,8 @@ public class FastTrack extends javax.swing.JFrame {
                         Desktop cashierFrame = new Desktop();
                         cashierFrame.setVisible(true);
                     } else if ("manager".equals(userRole)) {
-                        try {
-                            admin managerFrame = new admin();
-                            managerFrame.setVisible(true);
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(FastTrack.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        admin managerFrame = new admin();
+                        managerFrame.setVisible(true);
                     }
 
                     fast.dispose();

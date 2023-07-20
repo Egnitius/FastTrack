@@ -4,119 +4,418 @@
  */
 package fasttrack;
 
-/**
- *
- * @author Paledi.Egnitius
- */
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTextField;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
+/**
+ *
+ * @author Capaciti
+ */
 public class admin extends javax.swing.JFrame {
 
-    Connection conn;
+    private JTable table;
 
-    public admin() throws ClassNotFoundException {
-        initComponents();
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/fasttrack";
-            String user = "root";
-            String pword = "12345";
-
-            conn = DriverManager.getConnection(url, user, pword);
-        } catch (SQLException ex) {
-            System.out.println("Error" + ex.getMessage());
-        }
-
-        // Inside the method where you create the JTable
-// Inside the method where you create the JTable
-        DefaultCellEditor cellEditor = new DefaultCellEditor(new JTextField());
-        tblStock.getColumnModel().getColumn(1).setCellEditor(cellEditor); // Column "item"
-        tblStock.getColumnModel().getColumn(2).setCellEditor(cellEditor); // Column "Qty"
-        tblStock.getColumnModel().getColumn(3).setCellEditor(cellEditor); // Column "Price"
-        tblStock.getColumnModel().getColumn(4).setCellEditor(cellEditor); // Column "TotalPrice"
-        tblStock.setCellSelectionEnabled(true); // Allow selecting a single cell
-
+    private void setTableModel(DefaultTableModel tableModel) {
+        jTable1.setModel(tableModel);
     }
 
+    public admin() {
+        initComponents();
+        populateTable();
+    }
+
+    private void populateTable() {
+        try {
+            // Code to populate jTable1 from the database
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String url = "jdbc:mysql://localhost:3306/fasttrack";
+        String userid = "root";
+        String password = "12345";
+        String sql = "SELECT * FROM stock";
+
+        try (Connection connection = DriverManager.getConnection(url, userid, password); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            ResultSetMetaData md = rs.getMetaData();
+            int columns = md.getColumnCount();
+
+            // Get column names excluding the column you want to exclude (for example, "itemID")
+            ArrayList<String> columnNames = new ArrayList<>();
+            for (int i = 1; i <= columns; i++) {
+                String columnName = md.getColumnName(i);
+                if (!columnName.equals("productImg")) {
+                    columnNames.add(columnName);
+                }
+            }
+
+            // Get row data excluding the column you want to exclude
+            ArrayList<ArrayList<Object>> data = new ArrayList<>();
+            while (rs.next()) {
+                ArrayList<Object> row = new ArrayList<>();
+                for (int i = 1; i <= columns; i++) {
+                    String columnName = md.getColumnName(i);
+                    if (!columnName.equals("productImg")) {
+                        row.add(rs.getObject(i));
+                    }
+                }
+                data.add(row);
+            }
+
+            // Convert ArrayList<ArrayList<Object>> to a 2D array
+            Object[][] dataArray = new Object[data.size()][];
+            for (int i = 0; i < data.size(); i++) {
+                ArrayList<Object> row = data.get(i);
+                dataArray[i] = row.toArray(Object[]::new);
+            }
+
+            // Create a DefaultTableModel and set the data and column names
+            DefaultTableModel tableModel = new DefaultTableModel(dataArray, columnNames.toArray());
+
+            // Set the table model for jTable1
+            jTable1.setModel(tableModel);
+
+            System.out.println("Table populated successfully.");
+
+        } catch (SQLException e) {
+            System.err.println("Error while populating table: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void refreshTableData() {
+        // Simply call the method to populate the table again
+        populateTable();
+    }
+
+    public void removeSelectedRowFromTable() {
+        // Get the selected row index
+        int selectedRowIndex = jTable1.getSelectedRow();
+
+        // Check if a row is selected
+        if (selectedRowIndex >= 0) {
+            // Get the table's model
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            int columnIndex = 0;
+
+            // Get the value of the first column (assuming it holds the primary key or identifier for the row)
+            Object selectedItem = model.getValueAt(selectedRowIndex, columnIndex); // columnIndex for the item column
+
+            // Remove the row from the database
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String url = "jdbc:mysql://localhost:3306/fasttrack";
+            String userid = "root";
+            String password = "12345";
+            String deleteSql = "DELETE FROM stock WHERE itemID = ?"; // Use the correct column name for the primary key
+
+            try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(deleteSql)) {
+
+                // Set the value for the first parameter (itemID column) in the prepared statement
+                if (selectedItem instanceof Integer integer) {
+                    pstmt.setInt(1, integer);
+                } else {
+                    // Handle other data types if needed
+                    // For example, if the itemID column is of type Long, you can use:
+                    // pstmt.setLong(1, (Long) selectedItem);
+                }
+
+                pstmt.executeUpdate();
+
+            } catch (SQLException e) {
+                System.err.println("Error while deleting row from the database: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            // Remove the selected row from the model
+            model.removeRow(selectedRowIndex);
+        } else {
+            // Display a message if no row is selected
+            JOptionPane.showMessageDialog(null, "Please select a row to remove.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        products = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        qtyinput = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        unitpriceinput = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        addinenvtorybtn = new javax.swing.JButton();
+        remove = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblStock = new javax.swing.JTable();
-        btnView = new javax.swing.JButton();
-        btnClear = new javax.swing.JButton();
+        jTable1 = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        updatebtn = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 
-        tblStock.setModel(new javax.swing.table.DefaultTableModel(
+        jPanel3.setBackground(new java.awt.Color(0, 102, 102));
+
+        jLabel2.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Product : ");
+
+        products.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Apples", "Bananas", "Pears", "Watermelons", "Mangos", "Grapes", "Cabbage", "Carrots", "Beetroot", "Potatoes", "Onions" }));
+
+        jLabel3.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Qty :");
+
+        qtyinput.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        qtyinput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qtyinputActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Unit Price :");
+
+        unitpriceinput.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        unitpriceinput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unitpriceinputActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Gill Sans MT", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Fast Track Inventory");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(jLabel2)
+                        .addGap(1, 1, 1)
+                        .addComponent(products, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(121, 121, 121)
+                        .addComponent(jLabel3)
+                        .addGap(2, 2, 2)
+                        .addComponent(qtyinput, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(129, 129, 129)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(unitpriceinput, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(297, 297, 297)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(products, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(qtyinput, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addComponent(unitpriceinput, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jPanel4.setBackground(new java.awt.Color(0, 102, 102));
+
+        addinenvtorybtn.setBackground(new java.awt.Color(0, 102, 102));
+        addinenvtorybtn.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        addinenvtorybtn.setForeground(new java.awt.Color(255, 255, 255));
+        addinenvtorybtn.setText("Update Inventory");
+        addinenvtorybtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addinenvtorybtnActionPerformed(evt);
+            }
+        });
+
+        remove.setBackground(new java.awt.Color(0, 102, 102));
+        remove.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        remove.setForeground(new java.awt.Color(255, 255, 255));
+        remove.setText("Remove");
+        remove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "ItemID", "item", "Qty", "Price", "TotalPrice"
+                "Item ID", "Item", "Barcode ", "Qty", "Unit Price", "Total Price"
             }
         ));
-        jScrollPane1.setViewportView(tblStock);
+        jScrollPane1.setViewportView(jTable1);
 
-        btnView.setText("View");
-        btnView.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 619, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(remove, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(addinenvtorybtn, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(addinenvtorybtn)
+                        .addGap(39, 39, 39)
+                        .addComponent(remove))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        jPanel5.setBackground(new java.awt.Color(0, 102, 102));
+
+        jLabel6.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Total Qty :");
+
+        jTextField1.setEditable(false);
+        jTextField1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
+        jLabel7.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("Total Amount :");
+
+        jTextField2.setEditable(false);
+        jTextField2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+
+        updatebtn.setBackground(new java.awt.Color(0, 102, 102));
+        updatebtn.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        updatebtn.setForeground(new java.awt.Color(255, 255, 255));
+        updatebtn.setText("View");
+        updatebtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewActionPerformed(evt);
+                updatebtnActionPerformed(evt);
             }
         });
 
-        btnClear.setText("Clear");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
+        btnExit.setBackground(new java.awt.Color(0, 102, 102));
+        btnExit.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        btnExit.setForeground(new java.awt.Color(255, 255, 255));
+        btnExit.setText("Exit");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                btnExitActionPerformed(evt);
             }
         });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jLabel6)
+                .addGap(4, 4, 4)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(99, 99, 99)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(105, 105, 105)
+                .addComponent(updatebtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnExit)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updatebtn)
+                    .addComponent(btnExit))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(196, 196, 196)
-                .addComponent(btnView)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
-                .addComponent(btnClear)
-                .addGap(196, 196, 196))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(62, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnView)
-                    .addComponent(btnClear))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(101, 101, 101))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -133,206 +432,276 @@ public class admin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public class StockTableModel extends AbstractTableModel {
+    private void qtyinputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtyinputActionPerformed
 
-        private final String[] columnNames = {"itemID", "item", "Qty", "Price", "TotalPrice"};
-        private final List<Stock> data;
 
-        public StockTableModel(List<Stock> data) {
-            this.data = data;
-        }
+    }//GEN-LAST:event_qtyinputActionPerformed
 
-        @Override
-        public int getRowCount() {
-            return data.size();
-        }
+    private void unitpriceinputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unitpriceinputActionPerformed
 
-        @Override
-        public int getColumnCount() {
-            return columnNames.length;
-        }
+    }//GEN-LAST:event_unitpriceinputActionPerformed
 
-        @Override
-        public void setValueAt(Object value, int rowIndex, int columnIndex) {
-            Stock stock = data.get(rowIndex);
+    private void removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeActionPerformed
+        removeSelectedRowFromTable();
+    }//GEN-LAST:event_removeActionPerformed
 
-            switch (columnIndex) {
-                case 0:
-                    stock.setItemID((int) value);
-                    break;
-                case 1:
-                    stock.setItem((String) value);
-                    break;
-                case 2:
-                    stock.setQuantity(Integer.parseInt((String) value)); // Convert to Integer
-                    break;
-                case 3:
-                    stock.setPrice(Double.parseDouble((String) value)); // Convert to Double
-                    break;
-                case 4:
-                    stock.setTotalPrice(Double.parseDouble((String) value)); // Convert to Double
-                    break;
-                // Handle other columns if needed
-            }
+    private void addinenvtorybtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addinenvtorybtnActionPerformed
 
-            // Update the database with the new value
-            updateDatabase(stock);
+        //int enterQty = Integer.parseInt(qtyinput.getText());
+        //float enterPrice = Float.parseFloat(unitpriceinput.getText());
+        //String selectedItem = (String) products.getSelectedItem();
+        //float totPrice = enterQty * enterPrice;
+        if (!unitpriceinput.getText().isEmpty() && !qtyinput.getText().isEmpty()) {
 
-            // Notify the table that data has changed
-            fireTableCellUpdated(rowIndex, columnIndex);
-        }
+            int enterQty = Integer.parseInt(qtyinput.getText());
+            float enterPrice = Float.parseFloat(unitpriceinput.getText());
+            String selectedItem = (String) products.getSelectedItem();
+            float totPrice = enterQty * enterPrice;
 
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            Stock stock = data.get(rowIndex);
-
-            return switch (columnIndex) {
-                case 0 ->
-                    stock.getItemID();
-                case 1 ->
-                    stock.getItem();
-                case 2 ->
-                    stock.getQuantity();
-                case 3 ->
-                    stock.getPrice();
-                case 4 ->
-                    stock.getTotalPrice();
-                default ->
-                    null;
-            };
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            // Return the class types of the columns for proper cell rendering/editing
-            return switch (columnIndex) {
-                case 0 ->
-                    Integer.class;
-                case 1, 2 ->
-                    String.class;
-                case 3, 4 ->
-                    Double.class;
-                default ->
-                    Object.class;
-            };
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            // Set the cells in columns 1, 2, 3, and 4 as editable
-            return columnIndex >= 1 && columnIndex <= 4;
-        }
-
-        // Update the database with the modified stock data
-        private void updateDatabase(Stock stock) {
+            // Update the quantity, price, and total price in the database
             try {
-                String sql = "UPDATE stock SET item = ?, quantity = ?, price = ?, TotalPrice = ? WHERE itemID = ?";
-                PreparedStatement pstmt = conn.prepareStatement(sql);
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String url = "jdbc:mysql://localhost:3306/fasttrack";
+            String userid = "root";
+            String password = "12345";
+            String updateSql = "UPDATE stock SET quantity = quantity + ?, price = ?, TotalPrice = TotalPrice + ? WHERE item = ?";
 
-                // Set the values for the prepared statement
-                pstmt.setString(1, stock.getItem());
-                pstmt.setInt(2, stock.getQuantity());
-                pstmt.setDouble(3, stock.getPrice());
-                pstmt.setDouble(4, stock.getTotalPrice());
-                pstmt.setInt(5, stock.getItemID());
+            try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(updateSql)) {
 
-                // Execute the update statement
-                int rowsAffected = pstmt.executeUpdate();
+                pstmt.setInt(1, enterQty);
+                pstmt.setFloat(2, enterPrice);
+                pstmt.setFloat(3, totPrice);
+                pstmt.setString(4, selectedItem);
+                pstmt.executeUpdate();
 
-                if (rowsAffected > 0) {
-                    System.out.println("Stock data updated successfully.");
-                } else {
-                    System.out.println("No rows updated.");
-                }
+                refreshTableData();
 
-                pstmt.close();
             } catch (SQLException e) {
+                System.err.println("Error while updating quantity in the database: " + e.getMessage());
                 e.printStackTrace();
             }
-        }
 
-        @Override
-        public String getColumnName(int column) {
-            return columnNames[column];
-        }
+        } else if (!qtyinput.getText().isEmpty()) {
+            int enterQty = Integer.parseInt(qtyinput.getText());
+            String selectedItem = (String) products.getSelectedItem();
 
-        public void clearData() {
-            data.clear();
-            fireTableDataChanged();
-        }
-    }
+            // Variables to store the fetched quantity and price from the database
+            int currentQuantity = 0;
+            float currentPrice = 0.0f;
 
+            // Fetch the current quantity and price from the database
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String url = "jdbc:mysql://localhost:3306/fasttrack";
+            String userid = "root";
+            String password = "12345";
+            String selectSql = "SELECT quantity, price FROM stock WHERE item = ?";
 
-    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
-        List<Stock> stock = new ArrayList<>();
+            try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(selectSql)) {
 
-        try {
-            String sql = "SELECT * FROM stock";
-            PreparedStatement pet = conn.prepareStatement(sql);
-            ResultSet rs = pet.executeQuery();
+                pstmt.setString(1, selectedItem);
+                ResultSet rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                int itemID = rs.getInt("itemID");
-                String item = rs.getString("item");
-                int quantity = rs.getInt("quantity");
-                double price = rs.getDouble("price");
-                double totalPrice = rs.getDouble("TotalPrice");
+                if (rs.next()) {
+                    currentQuantity = rs.getInt("quantity");
+                    currentPrice = rs.getFloat("price");
+                }
 
-                Stock stocks = new Stock(itemID, price, quantity, item, totalPrice);
-                stock.add(stocks);
+                rs.close();
+
+            } catch (SQLException e) {
+                System.err.println("Error while fetching quantity and price from the database: " + e.getMessage());
+                e.printStackTrace();
             }
 
-            StockTableModel model = new StockTableModel(stock);
-            tblStock.setModel(model);
-        } catch (SQLException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println(currentQuantity);
+
+            // Calculate the total price based on the fetched price and entered quantity
+            float totPrice = currentPrice * (enterQty + currentQuantity);
+
+            // Update the quantity and total price in the database
+            String updateSql = "UPDATE stock SET quantity = quantity + ?, TotalPrice = ? WHERE item = ?";
+
+            try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(updateSql)) {
+
+                pstmt.setInt(1, enterQty);
+                pstmt.setFloat(2, totPrice);
+                pstmt.setString(3, selectedItem);
+                pstmt.executeUpdate();
+
+                refreshTableData();
+
+            } catch (SQLException e) {
+                System.err.println("Error while updating quantity in the database: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else if (!unitpriceinput.getText().isEmpty()) {
+
+            float enterPrice = Float.parseFloat(unitpriceinput.getText());
+            String selectedItem = (String) products.getSelectedItem();
+            float totPrice = 0f;
+
+            // Fetch the current quantity from the database
+            int currentQuantity = 0;
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String url = "jdbc:mysql://localhost:3306/fasttrack";
+            String userid = "root";
+            String password = "12345";
+            String selectSql = "SELECT quantity FROM stock WHERE item = ?";
+
+            try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(selectSql)) {
+
+                pstmt.setString(1, selectedItem);
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    currentQuantity = rs.getInt("quantity");
+                }
+
+                rs.close();
+
+            } catch (SQLException e) {
+                System.err.println("Error while fetching quantity from the database: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            // Update the quantity, price, and total price in the database
+            String updateSql = "UPDATE stock SET  price = ?, TotalPrice = ? WHERE item = ?";
+
+            try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(updateSql)) {
+
+                pstmt.setFloat(1, enterPrice);
+                totPrice = currentQuantity * enterPrice;
+                pstmt.setFloat(2, totPrice);
+                pstmt.setString(3, selectedItem);
+                pstmt.executeUpdate();
+
+                refreshTableData();
+
+            } catch (SQLException e) {
+                System.err.println("Error while updating quantity in the database: " + e.getMessage());
+                e.printStackTrace();
+            }
+
         }
-    }//GEN-LAST:event_btnViewActionPerformed
 
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+    }//GEN-LAST:event_addinenvtorybtnActionPerformed
 
-        StockTableModel model = (StockTableModel) tblStock.getModel();
-        model.clearData();
-    }//GEN-LAST:event_btnClearActionPerformed
+    private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
+
+        // Fetch the sum of quantity from the database
+        int totalQuantity = 0;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        String url = "jdbc:mysql://localhost:3306/fasttrack";
+        String userid = "root";
+        String password = "12345";
+        String selectSql = "SELECT SUM(quantity) AS total FROM stock";
+
+        try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(selectSql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                totalQuantity = rs.getInt("total");
+            }
+
+            rs.close();
+
+        } catch (SQLException e) {
+            System.err.println("Error while fetching total quantity from the database: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Update the JTextField with the sum of quantity
+        jTextField1.setText(String.valueOf(totalQuantity));
+
+        // Fetch the sum of TotalPrice from the database
+        float totalPriceSum = 0.0f;
+
+        String selectSql2 = "SELECT SUM(TotalPrice) AS total FROM stock";
+
+        try (Connection connection = DriverManager.getConnection(url, userid, password); PreparedStatement pstmt = connection.prepareStatement(selectSql2)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                totalPriceSum = rs.getFloat("total");
+            }
+
+            rs.close();
+
+        } catch (SQLException e) {
+            System.err.println("Error while fetching total TotalPrice from the database: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Update the JTextField with the sum of TotalPrice
+        jTextField2.setText(String.valueOf(totalPriceSum));
+    }//GEN-LAST:event_updatebtnActionPerformed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        // Show a pop-up message
+        int result = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to exit?", "FastTrack",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (result == JOptionPane.YES_OPTION) {
+            // Redirect to the login page
+            FastTrack loginFrame = new FastTrack();
+            loginFrame.setVisible(true);
+            this.dispose(); // Close the current frame (FastTrack frame)
+        }
+    }//GEN-LAST:event_btnExitActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(admin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            try {
-                new admin().setVisible(true);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(admin.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            new admin().setVisible(true);
         });
+
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnClear;
-    private javax.swing.JButton btnView;
+    private javax.swing.JButton addinenvtorybtn;
+    private javax.swing.JButton btnExit;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tblStock;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JComboBox<String> products;
+    private javax.swing.JTextField qtyinput;
+    private javax.swing.JButton remove;
+    private javax.swing.JTextField unitpriceinput;
+    private javax.swing.JButton updatebtn;
     // End of variables declaration//GEN-END:variables
 }
