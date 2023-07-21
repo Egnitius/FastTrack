@@ -180,6 +180,7 @@ public class admin extends javax.swing.JFrame {
         btnExit = new javax.swing.JButton();
         lblTotalQty = new javax.swing.JLabel();
         lblTotalQty1 = new javax.swing.JLabel();
+        jbtnRegEm = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -271,6 +272,7 @@ public class admin extends javax.swing.JFrame {
         addinenvtorybtn.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         addinenvtorybtn.setForeground(new java.awt.Color(255, 255, 255));
         addinenvtorybtn.setText("Update Inventory");
+        addinenvtorybtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         addinenvtorybtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addinenvtorybtnActionPerformed(evt);
@@ -281,6 +283,7 @@ public class admin extends javax.swing.JFrame {
         remove.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         remove.setForeground(new java.awt.Color(255, 255, 255));
         remove.setText("Remove");
+        remove.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         remove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeActionPerformed(evt);
@@ -301,6 +304,7 @@ public class admin extends javax.swing.JFrame {
         jtbnAdd.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jtbnAdd.setForeground(new java.awt.Color(255, 255, 255));
         jtbnAdd.setText("Add");
+        jtbnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jtbnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jtbnAddActionPerformed(evt);
@@ -352,6 +356,7 @@ public class admin extends javax.swing.JFrame {
         btnExit.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         btnExit.setForeground(new java.awt.Color(255, 255, 255));
         btnExit.setText("Exit");
+        btnExit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExitActionPerformed(evt);
@@ -363,6 +368,17 @@ public class admin extends javax.swing.JFrame {
 
         lblTotalQty1.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         lblTotalQty1.setText("00");
+
+        jbtnRegEm.setBackground(new java.awt.Color(0, 102, 102));
+        jbtnRegEm.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        jbtnRegEm.setForeground(new java.awt.Color(255, 255, 255));
+        jbtnRegEm.setText("Register Employee");
+        jbtnRegEm.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jbtnRegEm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnRegEmActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -378,6 +394,8 @@ public class admin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(lblTotalQty1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jbtnRegEm)
+                .addGap(18, 18, 18)
                 .addComponent(btnExit)
                 .addGap(21, 21, 21))
         );
@@ -390,7 +408,8 @@ public class admin extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(btnExit)
                     .addComponent(lblTotalQty)
-                    .addComponent(lblTotalQty1))
+                    .addComponent(lblTotalQty1)
+                    .addComponent(jbtnRegEm))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -700,6 +719,13 @@ public class admin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_productsActionPerformed
 
+    private void jbtnRegEmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRegEmActionPerformed
+        regEmplyee register = new regEmplyee();
+        register.setVisible(true);
+        
+        this.dispose();
+    }//GEN-LAST:event_jbtnRegEmActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -728,6 +754,7 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton jbtnRegEm;
     private javax.swing.JButton jtbnAdd;
     private javax.swing.JLabel lblTotalQty;
     private javax.swing.JLabel lblTotalQty1;
