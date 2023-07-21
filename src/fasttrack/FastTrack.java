@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,11 +17,28 @@ import java.util.logging.Logger;
  */
 public class FastTrack extends javax.swing.JFrame {
 
+    Connection conn = null;
+
     /**
      * Creates new form FastTrack
      */
     public FastTrack() {
         initComponents();
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/fasttrack";
+            String user = "root";
+            String pword = "12345";
+
+            conn = DriverManager.getConnection(url, user, pword);
+        } catch (SQLException ex) {
+            System.out.println("Error connecting to the database: " + ex.getMessage());
+            // You can display an error message dialog here using JOptionPane.showMessageDialog or log the error.
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Database driver not found: " + ex.getMessage());
+            // You can display an error message dialog here using JOptionPane.showMessageDialog or log the error.
+        }
     }
 
     /**
@@ -164,15 +179,11 @@ public class FastTrack extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FastTrack.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FastTrack.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FastTrack.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FastTrack.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -186,7 +197,7 @@ public class FastTrack extends javax.swing.JFrame {
                 String employeeID = fast.txtEmployeeId.getText();
                 String employeePass = new String(fast.jPin.getPassword());
                 // Perform login authentication logic
-                if (authenticateUser(employeeID, employeePass)) {
+                if (authenticateUser(fast.conn, employeeID, employeePass)) {
                     // Successful login
                     System.out.println("Login successful!");
 
@@ -194,7 +205,7 @@ public class FastTrack extends javax.swing.JFrame {
                     employeeId = employeeID;
 
                     // Determine the user's role based on the employeeID (you need to implement this logic)
-                    userRole = determineUserRole(employeeID);
+                    userRole = FastTrack.determineUserRole(employeeID);
 
                     // Open the appropriate frame based on the user's role
                     if ("cashier".equals(userRole)) {
@@ -216,23 +227,16 @@ public class FastTrack extends javax.swing.JFrame {
         });
     }
 
-    private static boolean authenticateUser(String employeeID, String employeePass) {
+    private static boolean authenticateUser(Connection conn, String employeeID, String employeePass) {
         // TODO: Implement your authentication logic here
         // Example: Check the employee ID and PIN against a database or predefined values
 
         // Create a database connection and query the employee table
-        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         boolean isAuthenticated = false;
 
         try {
-            String url = "jdbc:mysql://localhost:3306/fasttrack";
-            String user = "root";
-            String password = "12345";
-
-            conn = DriverManager.getConnection(url, user, password);
-
             // Prepare the SQL statement to query the employee table
             String query = "SELECT * FROM tblemployees WHERE EmployeeID = ? AND employeePass = ?";
             stmt = conn.prepareStatement(query);
@@ -258,9 +262,7 @@ public class FastTrack extends javax.swing.JFrame {
                 if (stmt != null) {
                     stmt.close();
                 }
-                if (conn != null) {
-                    conn.close();
-                }
+                // Note: Do not close the conn connection here, as you will use it in other methods.
             } catch (SQLException e) {
                 e.printStackTrace();
             }
