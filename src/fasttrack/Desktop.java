@@ -2054,18 +2054,32 @@ public class Desktop extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
-        // pat btn
-        Double tot = Double.valueOf(total.getText());
-        Double paid = Double.valueOf(cash.getText());
-        Double balance = paid - tot;
+        // Get the text from the cash and total fields
+        String cashText = cash.getText();
+        String totalText = total.getText();
 
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
-        DecimalFormat df = new DecimalFormat("0.00", symbols);
+        if (cashText.isEmpty() || totalText.isEmpty()) {
+            // Show an error message if either field is empty
+            JOptionPane.showMessageDialog(this, "Please enter cash payment.", "FastTrack", JOptionPane.ERROR_MESSAGE);
+            return; // Return early to prevent further processing
+        }
 
-        change.setText(String.valueOf(df.format(balance)));
-        updateTotalPrice();
+        try {
+            // Parse the values into Doubles
+            Double tot = Double.valueOf(totalText);
+            Double paid = Double.valueOf(cashText);
+            Double balance = paid - tot;
 
-        JOptionPane.showMessageDialog(this, "Payment accepted...", "FastTrack", JOptionPane.INFORMATION_MESSAGE);
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+            DecimalFormat df = new DecimalFormat("0.00", symbols);
+
+            change.setText(String.valueOf(df.format(balance)));
+            updateTotalPrice();
+            JOptionPane.showMessageDialog(this, "Payment accepted...", "FastTrack", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException e) {
+            // Handle the exception if the text cannot be parsed into a Double
+            JOptionPane.showMessageDialog(this, "Invalid cash payment or total amount.", "FastTrack", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed

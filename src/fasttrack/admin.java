@@ -84,6 +84,7 @@ public class admin extends javax.swing.JFrame {
             // Set the table model for jTable1
             jTable1.setModel(tableModel);
 
+            helperFunction();
             System.out.println("Table populated successfully.");
 
         } catch (SQLException e) {
@@ -175,11 +176,10 @@ public class admin extends javax.swing.JFrame {
         jtbnAdd = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        updatebtn = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
+        lblTotalQty = new javax.swing.JLabel();
+        lblTotalQty1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -191,7 +191,12 @@ public class admin extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Product : ");
 
-        products.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Apples", "Bananas", "Pears", "Watermelons", "Mangos", "Grapes", "Cabbage", "Carrots", "Beetroot", "Potatoes", "Onions" }));
+        products.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Apples", "Bananas", "Pears", "Watermelon", "Mangos", "Grapes", "Cabbage", "Carrots", "Beetroot", "Potatoes", "Onions" }));
+        products.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productsActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -339,30 +344,9 @@ public class admin extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Total Qty :");
 
-        jTextField1.setEditable(false);
-        jTextField1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
         jLabel7.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Total Amount :");
-
-        jTextField2.setEditable(false);
-        jTextField2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-
-        updatebtn.setBackground(new java.awt.Color(0, 102, 102));
-        updatebtn.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
-        updatebtn.setForeground(new java.awt.Color(255, 255, 255));
-        updatebtn.setText("View");
-        updatebtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updatebtnActionPerformed(evt);
-            }
-        });
 
         btnExit.setBackground(new java.awt.Color(0, 102, 102));
         btnExit.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
@@ -374,6 +358,12 @@ public class admin extends javax.swing.JFrame {
             }
         });
 
+        lblTotalQty.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        lblTotalQty.setText("00");
+
+        lblTotalQty1.setFont(new java.awt.Font("Gill Sans MT", 0, 18)); // NOI18N
+        lblTotalQty1.setText("00");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -381,17 +371,15 @@ public class admin extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel6)
-                .addGap(4, 4, 4)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(99, 99, 99)
+                .addGap(18, 18, 18)
+                .addComponent(lblTotalQty)
+                .addGap(113, 113, 113)
                 .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(264, 264, 264)
-                .addComponent(updatebtn)
+                .addGap(18, 18, 18)
+                .addComponent(lblTotalQty1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnExit)
-                .addContainerGap())
+                .addGap(21, 21, 21))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -399,11 +387,10 @@ public class admin extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updatebtn)
-                    .addComponent(btnExit))
+                    .addComponent(btnExit)
+                    .addComponent(lblTotalQty)
+                    .addComponent(lblTotalQty1))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -499,6 +486,9 @@ public class admin extends javax.swing.JFrame {
                 pstmt.setString(4, selectedItem);
                 pstmt.executeUpdate();
 
+                // Show success message
+                JOptionPane.showMessageDialog(this, "Update successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
                 refreshTableData();
 
             } catch (SQLException e) {
@@ -543,6 +533,8 @@ public class admin extends javax.swing.JFrame {
             }
 
             System.out.println(currentQuantity);
+            // Show success message
+            JOptionPane.showMessageDialog(this, "Update successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
             // Calculate the total price based on the fetched price and entered quantity
             float totPrice = currentPrice * (enterQty + currentQuantity);
@@ -607,7 +599,10 @@ public class admin extends javax.swing.JFrame {
                 pstmt.setFloat(2, totPrice);
                 pstmt.setString(3, selectedItem);
                 pstmt.executeUpdate();
-
+                
+                // Show success message
+                JOptionPane.showMessageDialog(this, "Update successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                
                 refreshTableData();
 
             } catch (SQLException e) {
@@ -615,12 +610,14 @@ public class admin extends javax.swing.JFrame {
                 e.printStackTrace();
             }
 
+        } else {
+            // Show a validation message using JOptionPane.showMessageDialog
+            JOptionPane.showMessageDialog(this, "Please enter quantity or unit price.", "Validation Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_addinenvtorybtnActionPerformed
 
-    private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
-
+    public void helperFunction() {
         // Fetch the sum of quantity from the database
         int totalQuantity = 0;
         try {
@@ -650,8 +647,7 @@ public class admin extends javax.swing.JFrame {
         }
 
         // Update the JTextField with the sum of quantity
-        jTextField1.setText(String.valueOf(totalQuantity));
-
+        lblTotalQty.setText(String.valueOf(totalQuantity));
         // Fetch the sum of TotalPrice from the database
         float totalPriceSum = 0.0f;
 
@@ -673,9 +669,8 @@ public class admin extends javax.swing.JFrame {
         }
 
         // Update the JTextField with the sum of TotalPrice
-        jTextField2.setText(String.valueOf(totalPriceSum));
-    }//GEN-LAST:event_updatebtnActionPerformed
-
+        lblTotalQty1.setText(String.valueOf(totalPriceSum));
+    }
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // Show a pop-up message
         int result = JOptionPane.showConfirmDialog(this,
@@ -695,15 +690,15 @@ public class admin extends javax.swing.JFrame {
         loginFrame.setVisible(true);
     }
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     private void jtbnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtbnAddActionPerformed
         AddStockItemDialog addStock = new AddStockItemDialog(this);
 
         populateTable();
     }//GEN-LAST:event_jtbnAddActionPerformed
+
+    private void productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_productsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -733,13 +728,12 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton jtbnAdd;
+    private javax.swing.JLabel lblTotalQty;
+    private javax.swing.JLabel lblTotalQty1;
     private javax.swing.JComboBox<String> products;
     private javax.swing.JTextField qtyinput;
     private javax.swing.JButton remove;
     private javax.swing.JTextField unitpriceinput;
-    private javax.swing.JButton updatebtn;
     // End of variables declaration//GEN-END:variables
 }
