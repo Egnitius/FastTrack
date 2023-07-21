@@ -683,12 +683,17 @@ public class admin extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
-            // Redirect to the login page
-            FastTrack loginFrame = new FastTrack();
-            loginFrame.setVisible(true);
-            this.dispose(); // Close the current frame (FastTrack frame)
+            returnToLogin(); // Return to the login page
+            this.dispose(); // Close the current frame (Desktop frame)
         }
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void returnToLogin() {
+        Connection conn = null;
+        // Create a new instance of FastTrack using the existing connection
+        FastTrack loginFrame = new FastTrack(conn);
+        loginFrame.setVisible(true);
+    }
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -696,7 +701,7 @@ public class admin extends javax.swing.JFrame {
 
     private void jtbnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtbnAddActionPerformed
         AddStockItemDialog addStock = new AddStockItemDialog(this);
-        
+
         populateTable();
     }//GEN-LAST:event_jtbnAddActionPerformed
 

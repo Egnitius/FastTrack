@@ -2058,8 +2058,9 @@ public class Desktop extends javax.swing.JFrame {
             String formattedDate = currentDate.format(formatter);
 
             String cashierName = "";
+            Connection connection = null;
             // Get the logged-in employee ID
-            FastTrack fasttrack = new FastTrack();
+            FastTrack fasttrack = new FastTrack(connection);
             String employeeId = fasttrack.getEmployeeId();
             System.out.println("Employee ID: " + employeeId);
 
@@ -2296,12 +2297,16 @@ public class Desktop extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
-            // Redirect to the login page
-            FastTrack loginFrame = new FastTrack();
-            loginFrame.setVisible(true);
-            this.dispose(); // Close the current frame (FastTrack frame)
+            returnToLogin(); // Return to the login page
+            this.dispose(); // Close the current frame (Desktop frame)
         }
     }//GEN-LAST:event_jbtnExitActionPerformed
+
+    private void returnToLogin() {
+        // Create a new instance of FastTrack using the existing connection
+        FastTrack loginFrame = new FastTrack(conn);
+        loginFrame.setVisible(true);
+    }
 
     /**
      * @param args the command line arguments

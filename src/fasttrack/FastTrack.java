@@ -21,10 +21,12 @@ public class FastTrack extends javax.swing.JFrame {
 
     /**
      * Creates new form FastTrack
+     * @param connection
      */
-    public FastTrack() {
+    public FastTrack(Connection connection) {
         initComponents();
 
+        this.conn = connection;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://localhost:3306/fasttrack";
@@ -188,7 +190,8 @@ public class FastTrack extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            FastTrack fast = new FastTrack();
+            Connection connection = null;
+            FastTrack fast = new FastTrack(connection);
             fast.setVisible(true);
 
             // Event handling for the "Login" button
@@ -215,7 +218,6 @@ public class FastTrack extends javax.swing.JFrame {
                         admin managerFrame = new admin();
                         managerFrame.setVisible(true);
                     }
-
                     fast.dispose();
                 } else {
                     // Failed login
@@ -253,19 +255,7 @@ public class FastTrack extends javax.swing.JFrame {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // Close the database resources
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                // Note: Do not close the conn connection here, as you will use it in other methods.
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        
         }
 
         return isAuthenticated;
